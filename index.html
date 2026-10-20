@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Món quà dành cho bạn </title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+  color: #fff;
+  background: radial-gradient(circle at top, #ff9aaf, #a91d55 65%, #410d35);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heart {
+  position: fixed;
+  bottom: -40px;
+  animation: fly 7s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes fly {
+  0% { transform: translateY(0) rotate(0) scale(.6); opacity: 0; }
+  15% { opacity: .9; }
+  100% { transform: translateY(-115vh) rotate(360deg) scale(1.3); opacity: 0; }
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  width: min(90%, 400px);
+  text-align: center;
+  padding: 25px 20px;
+  border: 1px solid #ffffff55;
+  border-radius: 25px;
+  background: #ffffff18;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 60px #35001f55;
+}
+
+h1 { font-size: 27px; margin: 5px 0 12px; }
+p { line-height: 1.6; }
+
+input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #ffffff88;
+  border-radius: 12px;
+  background: #ffffff20;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  letter-spacing: 8px;
+  outline: none;
+}
+
+input::placeholder {
+  color: #ffe0e9;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin-top: 15px;
+}
+
+button {
+  border: 1px solid #ffffff55;
+  border-radius: 12px;
+  padding: 12px;
+  color: white;
+  font-size: 17px;
+  cursor: pointer;
+  background: #ffffff20;
+  transition: transform .2s, background .2s;
+}
+
+button:hover {
+  background: #ffffff45;
+  transform: translateY(-2px);
+}
+
+.primary {
+  width: 100%;
+  margin-top: 14px;
+  background: linear-gradient(135deg, #ff477e, #ff1744);
+  border: none;
+  font-weight: bold;
+}
+
+#status {
+  min-height: 24px;
+  color: #ffe1e9;
+  font-size: 14px;
+}
+
+.hidden { display: none !important; }
+
+/* Phong bì 3D */
+.scene {
+  perspective: 1000px;
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.envelope {
+  position: relative;
+  width: 260px;
+  height: 165px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 15px 15px #45002266);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotateX(4deg); }
+  50% { transform: translateY(-10px) rotateX(-3deg); }
+}
+
+.env-back {
+  position: absolute;
+  inset: 0;
+  background: #ffb4ca;
+  border-radius: 5px;
+}
+
+.letter {
+  position: absolute;
+  z-index: 2;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  height: 135px;
+  padding: 14px 8px;
+  border-radius: 8px;
+  background: #fffaf5;
+  color: #b52056;
+  transition: transform 1s ease, height 1s ease;
+  box-shadow: 0 0 10px #a91d5522;
+}
+
+.letter h2 { font-size: 18px; margin: 6px 0; }
+.letter p { font-size: 12px; margin: 8px 0; }
+
+.pocket {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: #f47d9f;
+  clip-path: polygon(0 0, 50% 60%, 100% 0, 100% 100%, 0 100%);
+  border-radius: 5px;
+}
+
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ff9db9;
+  clip-path: polygon(0 0, 100% 0, 50% 62%);
+  transform-origin: top;
+  transition: transform .8s ease;
+  z-index: 4;
+}
+
+.envelope.open .flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+.envelope.open .letter {
+  transform: translateY(-115px);
+  height: 220px;
+  z-index: 5;
+  transition-delay: .5s;
+}
+
+.envelope.open { animation: none; }
+
+.hint { font-size: 13px; opacity: .9; }
+
+#giftText { display: none; }
+#giftText.show { display: block; animation: appear 1s ease; }
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="hearts"></div>
+
+<!-- Màn hình mật khẩu -->
+<main class="container" id="login">
+  <div style="font-size:35px">💌 🌺 🌸</div>
+  <h1>Món quà nhỏ dành cho bạn</h1>
+  <p>Hãy nhập mật khẩu để mở món quà nhé!
+Ta bắt đầu bằng một bàn tay,
+tiếp đến là số đôi mắt trên một khuôn mặt,
+rồi đến con số đứng trước hai,
+cuối cùng là khoảng trống chưa có gì
+</p>
+
+  <input id="password" type="password"
+         placeholder="Nhập mật khẩu"
+         maxlength="8" readonly>
+
+  <div class="keypad">
+    <button onclick="addNumber('1')">1</button>
+    <button onclick="addNumber('2')">2</button>
+    <button onclick="addNumber('3')">3</button>
+    <button onclick="addNumber('4')">4</button>
+    <button onclick="addNumber('5')">5</button>
+    <button onclick="addNumber('6')">6</button>
+    <button onclick="addNumber('7')">7</button>
+    <button onclick="addNumber('8')">8</button>
+    <button onclick="addNumber('9')">9</button>
+    <button onclick="clearPassword()">⌫</button>
+    <button onclick="addNumber('0')">0</button>
+    <button onclick="clearPassword()">X</button>
+  </div>
+
+  <button class="primary" onclick="checkPassword()">
+    Mở món quà 
+  </button>
+  <p id="status"></p>
+</main>
+
+<!-- Màn hình phong bì -->
+<main class="container hidden" id="gift">
+  <h1>Một món quà cho bạn </h1>
+  <p>Chạm vào phong bì để mở thư nhé!</p>
+
+  <div class="scene">
+    <div class="envelope" id="envelope" onclick="openLetter()">
+      <div class="env-back"></div>
+
+      <div class="letter">
+        <h2>Gửi tặng 20/11 </h2>
+        <p>
+          Chúc cậu luôn vui vẻ, hạnh phúc
+          và may mắn mỗi ngày!
+        </p>
+        <div style="font-size:25px">🌹 💌 🌷</div>
+      </div>
+
+      <div class="pocket"></div>
+      <div class="flap"></div>
+    </div>
+  </div>
+
+  <p class="hint" id="hint">💌 Nhấn vào phong bì</p>
+
+  <div id="giftText">
+    <h2>Điều muốn nói với bạn</h2>
+    <p>
+      Hôm nay là dịp đặc biệt, mỗi năm chỉ có duy nhất một lần
+      Vậy nên chúc cậu một ngày 20/11 thật sự vui vẻ và thật sự ý nghĩa
+      ................................................................
+      Lưu ý!!! tui không có ý gì nhaa.
+      Nguyễn Trọng Khánh
+    </p>
+    <button class="primary" onclick="celebrate()">
+      Gửi lời cảm ơn 
+    </button>
+  </div>
+</main>
+
+<script>
+const SECRET = "0306"; // Đổi mật khẩu tại đây
+
+function addNumber(number) {
+  const input = document.getElementById("password");
+  if (input.value.length < 8) input.value += number;
+  document.getElementById("status").textContent = "";
+}
+
+function clearPassword() {
+  document.getElementById("password").value = "";
+  document.getElementById("status").textContent = "";
+}
+
+function checkPassword() {
+  const input = document.getElementById("password");
+  const status = document.getElementById("status");
+
+  if (input.value === SECRET) {
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("gift").classList.remove("hidden");
+  } else {
+    status.textContent = "Mật khẩu chưa đúng, thử lại nhé ";
+    input.value = "";
+  }
+}
+
+let opened = false;
+
+function openLetter() {
+  if (opened) return;
+  opened = true;
+
+  document.getElementById("envelope").classList.add("open");
+  document.getElementById("hint").textContent =
+    " Một lời chúc dành riêng cho bạn";
+
+  setTimeout(() => {
+    document.getElementById("giftText").classList.add("show");
+  }, 1400);
+
+  setTimeout(() => {
+    document.getElementById("gift").style.overflowY = "auto";
+  }, 1200);
+}
+
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.textContent = ["🌹", "🌺", "💗", "🌷", "🌸"][
+    Math.floor(Math.random() * 5)
+  ];
+
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (15 + Math.random() * 25) + "px";
+  heart.style.animationDuration = (5 + Math.random() * 5) + "s";
+
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 10000);
+}
+
+setInterval(createHeart, 400);
+
+function celebrate() {
+  for (let i = 0; i < 35; i++) {
+    setTimeout(createHeart, i * 80);
+  }
+}
+</script>
+
+</body>
+</html>
